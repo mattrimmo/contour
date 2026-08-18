@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contour — Example Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#F2F2F4; --bg-white:#FFFFFF; --bg-dark:#0D1F1A; --bg-dark-2:#122A23;
+    --text:#15181B; --text-mid:#4A4E52; --text-soft:#80858B; --rule:#E4E4E7;
+    --accent:#0A5C4A; --accent-mid:#0D7A62; --accent-lt:#E8F4F1;
+    --up:#0A7C4A; --down:#B4432E;
+    --radius:10px; --radius-sm:6px;
+    --font-head:"Sora",sans-serif; --font-body:"Inter",sans-serif;
+  }
+  html{-webkit-font-smoothing:antialiased;}
+  body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-variant-numeric:tabular-nums;}
+  ::selection{background:var(--accent-lt);}
+
+  .app{display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:216px;flex-shrink:0;background:var(--bg-dark);padding:1.5rem 1rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sb-logo{display:flex;align-items:center;gap:8px;padding:0 0.5rem;margin-bottom:2rem;}
+  .sb-logo img{height:14px;width:auto;filter:invert(1) brightness(2);}
+  .sb-back{display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);text-decoration:none;padding:0 0.5rem;margin-bottom:1.75rem;}
+  .sb-back:hover{color:rgba(255,255,255,0.6);}
+  .sb-section-label{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:0 0.5rem;margin-bottom:0.5rem;}
+  .sb-nav{list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:1.75rem;}
+  .sb-nav li{display:flex;align-items:center;gap:9px;padding:0.5rem 0.6rem;border-radius:var(--radius-sm);font-size:0.82rem;color:rgba(255,255,255,0.45);}
+  .sb-nav li .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);flex-shrink:0;}
+  .sb-nav li.active{background:rgba(255,255,255,0.08);color:#fff;font-weight:500;}
+  .sb-nav li.active .dot{background:var(--accent-mid);box-shadow:0 0 0 3px rgba(13,122,98,0.35);}
+  .sb-foot{margin-top:auto;padding:0.85rem;border-radius:var(--radius);background:rgba(255,255,255,0.04);}
+  .sb-foot p{font-size:0.75rem;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:0.7rem;}
+  .sb-foot a{display:block;text-align:center;font-size:0.78rem;font-weight:500;color:#fff;background:var(--accent);padding:0.55rem;border-radius:20px;text-decoration:none;}
+
+  /* MAIN */
+  .main{flex:1;min-width:0;padding:1.75rem 2.25rem 3.5rem;}
+  .topbar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;}
+  .topbar h1{font-family:var(--font-head);font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.25rem;}
+  .topbar .sub{font-size:0.8rem;color:var(--text-soft);}
+  .range-pill{font-size:0.78rem;color:var(--text-mid);background:var(--bg-white);border:1px solid var(--rule);padding:0.5rem 0.9rem;border-radius:20px;display:inline-flex;align-items:center;gap:6px;}
+
+  .disclosure{font-size:0.78rem;color:var(--text-soft);background:var(--bg-white);border:1px solid var(--rule);border-radius:var(--radius);padding:0.7rem 1rem;margin-bottom:1.5rem;}
+  .disclosure b{color:var(--text-mid);font-weight:500;}
+
+  /* KPI ROW */
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;margin-bottom:1.25rem;}
+  .kpi{background:var(--bg-white);padding:1.1rem 1.15rem 0.9rem;}
+  .kpi-label{font-size:0.68rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-soft);margin-bottom:0.5rem;}
+  .kpi-val{font-family:var(--font-head);font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.3rem;}
+  .kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:0.74rem;font-weight:600;margin-bottom:0.55rem;}
+  .kpi-trend.up{color:var(--up);}
+  .kpi-trend.down{color:var(--down);}
+  .kpi-trend .vs{color:var(--text-soft);font-weight:400;margin-left:2px;}
+  .kpi canvas{display:block;width:100%!important;height:28px!important;}
+
+  /* PANELS */
+  .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+  .grid-2b{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+  .panel{background:var(--bg-white);border:1px solid var(--rule);border-radius:var(--radius);padding:1.4rem 1.5rem;}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+  .panel-head h3{font-family:var(--font-head);font-size:0.88rem;font-weight:600;letter-spacing:-0.01em;}
+  .panel-head span{font-size:0.72rem;color:var(--text-soft);}
+
+  /* RANKED LIST */
+  .ranked{display:flex;flex-direction:column;gap:0.85rem;}
+  .ranked-row{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:10px;}
+  .ranked-row .idx{font-size:0.72rem;color:var(--text-soft);font-weight:500;}
+  .ranked-row .label{display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .ranked-row .name{font-size:0.8rem;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ranked-row .bar-track{height:5px;border-radius:3px;background:var(--bg);overflow:hidden;}
+  .ranked-row .bar-fill{height:100%;border-radius:3px;background:var(--accent-mid);}
+  .ranked-row .val{font-size:0.8rem;font-weight:600;color:var(--text-mid);white-space:nowrap;}
+
+  /* SEGMENT BAR */
+  .segbar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-bottom:0.9rem;}
+  .segbar span{height:100%;}
+  .seg-legend{display:flex;flex-wrap:wrap;gap:0.6rem 1.1rem;}
+  .seg-legend-item{display:flex;align-items:center;gap:6px;font-size:0.76rem;color:var(--text-mid);}
+  .seg-legend-item .sw{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+  @media(max-width:1000px){
+    .sidebar{display:none;}
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .grid-2,.grid-2b{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sb-logo"><img src="https://raw.githubusercontent.com/mattrimmo/contour/main/CONTOUR-BLACK.png" alt="Contour"/></div>
+    <a class="sb-back" href="index.html">&larr; Back to contourdigital.co.uk</a>
+    <p class="sb-section-label">Dashboard</p>
+    <ul class="sb-nav">
+      <li class="active"><span class="dot"></span>Overview</li>
+      <li><span class="dot"></span>Revenue</li>
+      <li><span class="dot"></span>Customers</li>
+      <li><span class="dot"></span>Products</li>
+      <li><span class="dot"></span>Countries</li>
+    </ul>
+    <p class="sb-section-label">Reports</p>
+    <ul class="sb-nav">
+      <li><span class="dot"></span>Monthly summary</li>
+      <li><span class="dot"></span>Exports</li>
+    </ul>
+    <div class="sb-foot">
+      <p>This is an example build on public data — want one wired to your own?</p>
+      <a href="index.html#contact">Book a free audit</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Overview</h1>
+        <p class="sub">Retail sales performance</p>
+      </div>
+      <div class="range-pill">Dec 2010 – Dec 2011</div>
+    </div>
+
+    <div class="disclosure"><b>Example build:</b> this dashboard runs on a real public dataset (UK online retailer transactions, UCI Machine Learning Repository) — not a client's data. It's here to show what an automated build looks like, wired to real numbers instead of a mockup.</div>
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><h3>Revenue over time</h3><span>Monthly, £</span></div>
+        <canvas id="revenueChart" height="110"></canvas>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Top countries</h3><span>By revenue</span></div>
+        <div class="ranked" id="countryList"></div>
+      </div>
+    </div>
+
+    <div class="grid-2b">
+      <div class="panel">
+        <div class="panel-head"><h3>Top products</h3><span>By revenue</span></div>
+        <div class="ranked" id="productList"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Customers by order count</h3><span>Repeat purchase behaviour</span></div>
+        <div id="segBar"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const monthly = [
+  {m:"2010-12", label:"Dec", revenue:823746.14, orders:1559, customers:885, aov:528.38},
+  {m:"2011-01", label:"Jan", revenue:691364.56, orders:1086, customers:741, aov:636.62},
+  {m:"2011-02", label:"Feb", revenue:523631.89, orders:1100, customers:758, aov:476.03},
+  {m:"2011-03", label:"Mar", revenue:717639.36, orders:1454, customers:974, aov:493.56},
+  {m:"2011-04", label:"Apr", revenue:537808.62, orders:1246, customers:856, aov:431.63},
+  {m:"2011-05", label:"May", revenue:770536.02, orders:1681, customers:1056, aov:458.38},
+  {m:"2011-06", label:"Jun", revenue:761739.90, orders:1533, customers:991, aov:496.89},
+  {m:"2011-07", label:"Jul", revenue:719221.19, orders:1475, customers:949, aov:487.61},
+  {m:"2011-08", label:"Aug", revenue:759138.38, orders:1361, customers:935, aov:557.78},
+  {m:"2011-09", label:"Sep", revenue:1058590.17, orders:1837, customers:1266, aov:576.26},
+  {m:"2011-10", label:"Oct", revenue:1154979.30, orders:2040, customers:1364, aov:566.17},
+  {m:"2011-11", label:"Nov", revenue:1509496.33, orders:2769, customers:1664, aov:545.14},
+  {m:"2011-12", label:"Dec (partial)", revenue:638792.68, orders:819, customers:615, aov:779.97}
+];
+
+const countries = [
+  {name:"United Kingdom", revenue:9025222.08},
+  {name:"Netherlands", revenue:285446.34},
+  {name:"EIRE", revenue:283453.96},
+  {name:"Germany", revenue:228867.14},
+  {name:"France", revenue:209715.11},
+  {name:"Australia", revenue:138521.31}
+];
+
+const products = [
+  {name:"Regency Cakestand 3 Tier", revenue:174484.74},
+  {name:"Paper Craft, Little Birdie", revenue:168469.60},
+  {name:"White Hanging Heart T-Light Holder", revenue:106292.77},
+  {name:"Party Bunting", revenue:99504.33},
+  {name:"Jumbo Bag Red Retrospot", revenue:94340.05},
+  {name:"Rabbit Night Light", revenue:66964.99}
+];
+
+const segments = [
+  {label:"1 order", value:1493, color:"#D8D8DC"},
+  {label:"2–3 orders", value:1343, color:"#8BC4B2"},
+  {label:"4–6 orders", value:802, color:"#3E9C82"},
+  {label:"7+ orders", value:700, color:"#0A5C4A"}
+];
+
+const fmtGBP = n => '\u00A3' + Math.round(n).toLocaleString('en-GB');
+const fmtGBPk = n => '\u00A3' + (n/1000).toFixed(0) + 'k';
+
+// use Nov (latest full month) vs Oct as the trend comparison — Dec is partial (only to the 9th)
+const latest = monthly[11], prior = monthly[10];
+const pct = (a,b) => Math.round(((a-b)/b)*1000)/10;
+
+const kpis = [
+  {label:"Revenue", val: fmtGBP(monthly.reduce((s,m)=>s+m.revenue,0)), trend: pct(latest.revenue, prior.revenue), series: monthly.map(m=>m.revenue)},
+  {label:"Orders", val: monthly.reduce((s,m)=>s+m.orders,0).toLocaleString('en-GB'), trend: pct(latest.orders, prior.orders), series: monthly.map(m=>m.orders)},
+  {label:"Customers", val: "4,338", trend: pct(latest.customers, prior.customers), series: monthly.map(m=>m.customers)},
+  {label:"Avg Order Value", val: fmtGBP(534.40), trend: pct(latest.aov, prior.aov), series: monthly.map(m=>m.aov)},
+  {label:"Repeat Customers", val: "65.6%", trend: null, series: null}
+];
+
+const kpiRow = document.getElementById('kpiRow');
+kpis.forEach((k,i)=>{
+  const dir = k.trend===null ? '' : (k.trend>=0 ? 'up':'down');
+  const arrow = k.trend===null ? '' : (k.trend>=0 ? '\u2191':'\u2193');
+  const trendHtml = k.trend===null
+    ? `<div class="kpi-trend" style="visibility:hidden;">placeholder</div>`
+    : `<div class="kpi-trend ${dir}">${arrow} ${Math.abs(k.trend)}%<span class="vs">vs prior mo.</span></div>`;
+  const div = document.createElement('div');
+  div.className = 'kpi';
+  div.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div>${trendHtml}<canvas id="spark${i}"></canvas>`;
+  kpiRow.appendChild(div);
+});
+
+Chart.defaults.font.family = "Inter, sans-serif";
+Chart.defaults.color = '#80858B';
+
+kpis.forEach((k,i)=>{
+  if(!k.series) return;
+  new Chart(document.getElementById('spark'+i), {
+    type:'line',
+    data:{ labels:k.series.map((_,x)=>x), datasets:[{ data:k.series, borderColor:'#0D7A62', borderWidth:1.5, pointRadius:0, tension:0.35, fill:true, backgroundColor:'rgba(13,122,98,0.06)' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{enabled:false}}, scales:{ x:{display:false}, y:{display:false} }, elements:{point:{radius:0}} }
+  });
+});
+
+new Chart(document.getElementById('revenueChart'), {
+  type:'line',
+  data:{
+    labels: monthly.map(m=>m.label),
+    datasets:[{ data: monthly.map(m=>m.revenue), borderColor:'#0A5C4A', backgroundColor:'rgba(10,92,74,0.07)', fill:true, tension:0.35, borderWidth:2, pointRadius:0 }]
+  },
+  options:{
+    responsive:true,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => fmtGBP(ctx.parsed.y) } } },
+    scales:{
+      x:{ grid:{display:false}, ticks:{font:{size:10.5}} },
+      y:{ grid:{color:'#EFEFF1'}, ticks:{ callback:v=>fmtGBPk(v), font:{size:10.5} } }
+    }
+  }
+});
+
+function renderRanked(containerId, items, maxKey){
+  const max = Math.max(...items.map(d=>d[maxKey]));
+  const el = document.getElementById(containerId);
+  items.forEach((d,i)=>{
+    const pctW = Math.max(6, Math.round((d[maxKey]/max)*100));
+    const row = document.createElement('div');
+    row.className = 'ranked-row';
+    row.innerHTML = `<div class="idx">${i+1}</div><div class="label"><div class="name">${d.name}</div><div class="bar-track"><div class="bar-fill" style="width:${pctW}%"></div></div></div><div class="val">${fmtGBP(d[maxKey])}</div>`;
+    el.appendChild(row);
+  });
+}
+renderRanked('countryList', countries, 'revenue');
+renderRanked('productList', products, 'revenue');
+
+const segTotal = segments.reduce((s,x)=>s+x.value,0);
+const segBarEl = document.getElementById('segBar');
+const bar = document.createElement('div');
+bar.className = 'segbar';
+segments.forEach(s=>{
+  const span = document.createElement('span');
+  span.style.width = ((s.value/segTotal)*100)+'%';
+  span.style.background = s.color;
+  bar.appendChild(span);
+});
+const legend = document.createElement('div');
+legend.className = 'seg-legend';
+segments.forEach(s=>{
+  const item = document.createElement('div');
+  item.className = 'seg-legend-item';
+  item.innerHTML = `<span class="sw" style="background:${s.color}"></span>${s.label} <span style="color:var(--text-soft)">(${s.value.toLocaleString('en-GB')})</span>`;
+  legend.appendChild(item);
+});
+segBarEl.appendChild(bar);
+segBarEl.appendChild(legend);
+</script>
+
+</body>
+</html>

@@ -21,27 +21,36 @@
   html{-webkit-font-smoothing:antialiased;}
   body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-variant-numeric:tabular-nums;}
   ::selection{background:var(--accent-lt);}
+  button{font:inherit;cursor:pointer;}
 
   .app{display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:216px;flex-shrink:0;background:var(--bg-dark);padding:1.5rem 1rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sidebar{width:216px;flex-shrink:0;background:var(--bg-dark);padding:1.5rem 1rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
   .sb-logo{display:flex;align-items:center;gap:8px;padding:0 0.5rem;margin-bottom:2rem;}
   .sb-logo img{height:14px;width:auto;filter:invert(1) brightness(2);}
   .sb-back{display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);text-decoration:none;padding:0 0.5rem;margin-bottom:1.75rem;}
   .sb-back:hover{color:rgba(255,255,255,0.6);}
   .sb-section-label{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:0 0.5rem;margin-bottom:0.5rem;}
   .sb-nav{list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:1.75rem;}
-  .sb-nav li{display:flex;align-items:center;gap:9px;padding:0.5rem 0.6rem;border-radius:var(--radius-sm);font-size:0.82rem;color:rgba(255,255,255,0.45);}
-  .sb-nav li .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);flex-shrink:0;}
-  .sb-nav li.active{background:rgba(255,255,255,0.08);color:#fff;font-weight:500;}
-  .sb-nav li.active .dot{background:var(--accent-mid);box-shadow:0 0 0 3px rgba(13,122,98,0.35);}
+  .sb-nav button{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:9px;padding:0.5rem 0.6rem;border-radius:var(--radius-sm);font-size:0.82rem;color:rgba(255,255,255,0.45);transition:background 0.12s,color 0.12s;}
+  .sb-nav button:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.75);}
+  .sb-nav button:focus-visible{outline:2px solid var(--accent-mid);outline-offset:1px;}
+  .sb-nav button .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);flex-shrink:0;}
+  .sb-nav button.active{background:rgba(255,255,255,0.08);color:#fff;font-weight:500;}
+  .sb-nav button.active .dot{background:var(--accent-mid);box-shadow:0 0 0 3px rgba(13,122,98,0.35);}
+  .sb-nav button.disabled{opacity:0.55;cursor:default;}
+  .sb-nav button.disabled:hover{background:none;color:rgba(255,255,255,0.45);}
+  .sb-nav button .soon{margin-left:auto;font-size:0.62rem;letter-spacing:0.03em;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:0.1rem 0.45rem;}
   .sb-foot{margin-top:auto;padding:0.85rem;border-radius:var(--radius);background:rgba(255,255,255,0.04);}
   .sb-foot p{font-size:0.75rem;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:0.7rem;}
   .sb-foot a{display:block;text-align:center;font-size:0.78rem;font-weight:500;color:#fff;background:var(--accent);padding:0.55rem;border-radius:20px;text-decoration:none;}
 
   /* MAIN */
   .main{flex:1;min-width:0;padding:1.75rem 2.25rem 3.5rem;}
+  .view{display:none;}
+  .view.active{display:block;animation:fadeIn 0.18s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(2px);}to{opacity:1;transform:none;}}
   .topbar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;}
   .topbar h1{font-family:var(--font-head);font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.25rem;}
   .topbar .sub{font-size:0.8rem;color:var(--text-soft);}
@@ -52,6 +61,8 @@
 
   /* KPI ROW */
   .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;margin-bottom:1.25rem;}
+  .kpi-row.cols-3{grid-template-columns:repeat(3,1fr);}
+  .kpi-row.cols-4{grid-template-columns:repeat(4,1fr);}
   .kpi{background:var(--bg-white);padding:1.1rem 1.15rem 0.9rem;}
   .kpi-label{font-size:0.68rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-soft);margin-bottom:0.5rem;}
   .kpi-val{font-family:var(--font-head);font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.3rem;}
@@ -59,12 +70,14 @@
   .kpi-trend.up{color:var(--up);}
   .kpi-trend.down{color:var(--down);}
   .kpi-trend .vs{color:var(--text-soft);font-weight:400;margin-left:2px;}
+  .kpi-sub{font-size:0.74rem;color:var(--text-soft);}
   .kpi canvas{display:block;width:100%!important;height:28px!important;}
 
   /* PANELS */
   .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
   .grid-2b{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
   .panel{background:var(--bg-white);border:1px solid var(--rule);border-radius:var(--radius);padding:1.4rem 1.5rem;}
+  .panel.full{margin-bottom:1.25rem;}
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
   .panel-head h3{font-family:var(--font-head);font-size:0.88rem;font-weight:600;letter-spacing:-0.01em;}
   .panel-head span{font-size:0.72rem;color:var(--text-soft);}
@@ -86,9 +99,18 @@
   .seg-legend-item{display:flex;align-items:center;gap:6px;font-size:0.76rem;color:var(--text-mid);}
   .seg-legend-item .sw{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
 
+  /* TABLE */
+  table.data-table{width:100%;border-collapse:collapse;}
+  .data-table th{text-align:left;font-size:0.68rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-soft);padding:0 0.6rem 0.6rem;border-bottom:1px solid var(--rule);}
+  .data-table td{font-size:0.82rem;padding:0.62rem 0.6rem;border-bottom:1px solid var(--rule);}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table td.num{text-align:right;font-weight:500;}
+  .data-table th.num{text-align:right;}
+
   @media(max-width:1000px){
     .sidebar{display:none;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .kpi-row.cols-3,.kpi-row.cols-4{grid-template-columns:repeat(2,1fr);}
     .grid-2,.grid-2b{grid-template-columns:1fr;}
   }
 </style>
@@ -101,17 +123,17 @@
     <div class="sb-logo"><img src="https://raw.githubusercontent.com/mattrimmo/contour/main/CONTOUR-BLACK.png" alt="Contour"/></div>
     <a class="sb-back" href="index.html">&larr; Back to contourdigital.co.uk</a>
     <p class="sb-section-label">Dashboard</p>
-    <ul class="sb-nav">
-      <li class="active"><span class="dot"></span>Overview</li>
-      <li><span class="dot"></span>Revenue</li>
-      <li><span class="dot"></span>Customers</li>
-      <li><span class="dot"></span>Products</li>
-      <li><span class="dot"></span>Countries</li>
+    <ul class="sb-nav" id="mainNav">
+      <li><button data-view="overview" class="active"><span class="dot"></span>Overview</button></li>
+      <li><button data-view="revenue"><span class="dot"></span>Revenue</button></li>
+      <li><button data-view="customers"><span class="dot"></span>Customers</button></li>
+      <li><button data-view="products"><span class="dot"></span>Products</button></li>
+      <li><button data-view="countries"><span class="dot"></span>Countries</button></li>
     </ul>
     <p class="sb-section-label">Reports</p>
     <ul class="sb-nav">
-      <li><span class="dot"></span>Monthly summary</li>
-      <li><span class="dot"></span>Exports</li>
+      <li><button class="disabled" disabled><span class="dot"></span>Monthly summary<span class="soon">Soon</span></button></li>
+      <li><button class="disabled" disabled><span class="dot"></span>Exports<span class="soon">Soon</span></button></li>
     </ul>
     <div class="sb-foot">
       <p>This is an example build on public data — want one wired to your own?</p>
@@ -121,175 +143,301 @@
 
   <main class="main">
 
-    <div class="topbar">
-      <div>
-        <h1>Overview</h1>
-        <p class="sub">Retail sales performance</p>
+    <!-- OVERVIEW -->
+    <section class="view active" id="view-overview">
+      <div class="topbar">
+        <div><h1>Overview</h1><p class="sub">Retail sales performance</p></div>
+        <div class="range-pill">Dec 2010 – Dec 2011</div>
       </div>
-      <div class="range-pill">Dec 2010 – Dec 2011</div>
-    </div>
+      <div class="disclosure"><b>Example build:</b> this dashboard runs on a real public dataset (UK online retailer transactions, UCI Machine Learning Repository) — not a client's data. It's here to show what an automated build looks like, wired to real numbers instead of a mockup.</div>
+      <div class="kpi-row" id="kpiRow"></div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>Revenue over time</h3><span>Monthly, £</span></div>
+          <canvas id="revenueChart" height="110"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Top countries</h3><span>By revenue</span></div>
+          <div class="ranked" id="countryListOverview"></div>
+        </div>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <div class="panel-head"><h3>Top products</h3><span>By revenue</span></div>
+          <div class="ranked" id="productListOverview"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Customers by order count</h3><span>Repeat purchase behaviour</span></div>
+          <div id="segBar"></div>
+        </div>
+      </div>
+    </section>
 
-    <div class="disclosure"><b>Example build:</b> this dashboard runs on a real public dataset (UK online retailer transactions, UCI Machine Learning Repository) — not a client's data. It's here to show what an automated build looks like, wired to real numbers instead of a mockup.</div>
-
-    <div class="kpi-row" id="kpiRow"></div>
-
-    <div class="grid-2">
-      <div class="panel">
+    <!-- REVENUE -->
+    <section class="view" id="view-revenue">
+      <div class="topbar">
+        <div><h1>Revenue</h1><p class="sub">Monthly performance, full breakdown</p></div>
+        <div class="range-pill">Dec 2010 – Dec 2011</div>
+      </div>
+      <div class="kpi-row cols-3" id="revenueKpiRow"></div>
+      <div class="panel full">
         <div class="panel-head"><h3>Revenue over time</h3><span>Monthly, £</span></div>
-        <canvas id="revenueChart" height="110"></canvas>
+        <canvas id="revenueChart2" height="90"></canvas>
       </div>
-      <div class="panel">
-        <div class="panel-head"><h3>Top countries</h3><span>By revenue</span></div>
-        <div class="ranked" id="countryList"></div>
+      <div class="panel full">
+        <div class="panel-head"><h3>Month by month</h3><span>Revenue, orders, average order value</span></div>
+        <table class="data-table" id="monthlyTable">
+          <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">Orders</th><th class="num">Customers</th><th class="num">AOV</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </div>
+    </section>
 
-    <div class="grid-2b">
-      <div class="panel">
-        <div class="panel-head"><h3>Top products</h3><span>By revenue</span></div>
-        <div class="ranked" id="productList"></div>
+    <!-- CUSTOMERS -->
+    <section class="view" id="view-customers">
+      <div class="topbar">
+        <div><h1>Customers</h1><p class="sub">Purchase frequency and top accounts</p></div>
+        <div class="range-pill">Dec 2010 – Dec 2011</div>
       </div>
-      <div class="panel">
+      <div class="kpi-row cols-3" id="customersKpiRow"></div>
+      <div class="panel full">
         <div class="panel-head"><h3>Customers by order count</h3><span>Repeat purchase behaviour</span></div>
-        <div id="segBar"></div>
+        <div id="segBar2"></div>
       </div>
-    </div>
+      <div class="panel full">
+        <div class="panel-head"><h3>Top customers</h3><span>By revenue, anonymised customer ID</span></div>
+        <table class="data-table" id="topCustomersTable">
+          <thead><tr><th>Customer ID</th><th class="num">Revenue</th><th class="num">Orders</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="view" id="view-products">
+      <div class="topbar">
+        <div><h1>Products</h1><p class="sub">Top 15 by revenue</p></div>
+        <div class="range-pill">Dec 2010 – Dec 2011</div>
+      </div>
+      <div class="panel full">
+        <div class="panel-head"><h3>Top products</h3><span>By revenue</span></div>
+        <div class="ranked" id="productListFull"></div>
+      </div>
+    </section>
+
+    <!-- COUNTRIES -->
+    <section class="view" id="view-countries">
+      <div class="topbar">
+        <div><h1>Countries</h1><p class="sub">Top 15 by revenue</p></div>
+        <div class="range-pill">Dec 2010 – Dec 2011</div>
+      </div>
+      <div class="kpi-row cols-3" id="countriesKpiRow"></div>
+      <div class="panel full">
+        <div class="panel-head"><h3>Top countries</h3><span>By revenue</span></div>
+        <div class="ranked" id="countryListFull"></div>
+      </div>
+    </section>
 
   </main>
 </div>
 
 <script>
-const monthly = [
-  {m:"2010-12", label:"Dec", revenue:823746.14, orders:1559, customers:885, aov:528.38},
-  {m:"2011-01", label:"Jan", revenue:691364.56, orders:1086, customers:741, aov:636.62},
-  {m:"2011-02", label:"Feb", revenue:523631.89, orders:1100, customers:758, aov:476.03},
-  {m:"2011-03", label:"Mar", revenue:717639.36, orders:1454, customers:974, aov:493.56},
-  {m:"2011-04", label:"Apr", revenue:537808.62, orders:1246, customers:856, aov:431.63},
-  {m:"2011-05", label:"May", revenue:770536.02, orders:1681, customers:1056, aov:458.38},
-  {m:"2011-06", label:"Jun", revenue:761739.90, orders:1533, customers:991, aov:496.89},
-  {m:"2011-07", label:"Jul", revenue:719221.19, orders:1475, customers:949, aov:487.61},
-  {m:"2011-08", label:"Aug", revenue:759138.38, orders:1361, customers:935, aov:557.78},
-  {m:"2011-09", label:"Sep", revenue:1058590.17, orders:1837, customers:1266, aov:576.26},
-  {m:"2011-10", label:"Oct", revenue:1154979.30, orders:2040, customers:1364, aov:566.17},
-  {m:"2011-11", label:"Nov", revenue:1509496.33, orders:2769, customers:1664, aov:545.14},
-  {m:"2011-12", label:"Dec (partial)", revenue:638792.68, orders:819, customers:615, aov:779.97}
-];
+/* ---------- real data, computed from the UCI Online Retail dataset (archive.ics.uci.edu/dataset/352) ---------- */
+const DATA = {"monthly":[{"Month":"2010-12","revenue":823746.14,"orders":1559,"customers":885,"aov":528.38},{"Month":"2011-01","revenue":691364.56,"orders":1086,"customers":741,"aov":636.62},{"Month":"2011-02","revenue":523631.89,"orders":1100,"customers":758,"aov":476.03},{"Month":"2011-03","revenue":717639.36,"orders":1454,"customers":974,"aov":493.56},{"Month":"2011-04","revenue":537808.62,"orders":1246,"customers":856,"aov":431.63},{"Month":"2011-05","revenue":770536.02,"orders":1681,"customers":1056,"aov":458.38},{"Month":"2011-06","revenue":761739.9,"orders":1533,"customers":991,"aov":496.89},{"Month":"2011-07","revenue":719221.19,"orders":1475,"customers":949,"aov":487.61},{"Month":"2011-08","revenue":759138.38,"orders":1361,"customers":935,"aov":557.78},{"Month":"2011-09","revenue":1058590.17,"orders":1837,"customers":1266,"aov":576.26},{"Month":"2011-10","revenue":1154979.3,"orders":2040,"customers":1364,"aov":566.17},{"Month":"2011-11","revenue":1509496.33,"orders":2769,"customers":1664,"aov":545.14},{"Month":"2011-12","revenue":638792.68,"orders":819,"customers":615,"aov":779.97}],"countries":[{"Country":"United Kingdom","revenue":9025222.08,"orders":18019},{"Country":"Netherlands","revenue":285446.34,"orders":94},{"Country":"EIRE","revenue":283453.96,"orders":288},{"Country":"Germany","revenue":228867.14,"orders":457},{"Country":"France","revenue":209715.11,"orders":392},{"Country":"Australia","revenue":138521.31,"orders":57},{"Country":"Spain","revenue":61577.11,"orders":90},{"Country":"Switzerland","revenue":57089.9,"orders":54},{"Country":"Belgium","revenue":41196.34,"orders":98},{"Country":"Sweden","revenue":38378.33,"orders":36},{"Country":"Japan","revenue":37416.37,"orders":19},{"Country":"Norway","revenue":36165.44,"orders":36},{"Country":"Portugal","revenue":33747.1,"orders":58},{"Country":"Finland","revenue":22546.08,"orders":41},{"Country":"Singapore","revenue":21279.29,"orders":7}],"products":[{"Description":"REGENCY CAKESTAND 3 TIER","revenue":174484.74,"qty":13879},{"Description":"PAPER CRAFT , LITTLE BIRDIE","revenue":168469.6,"qty":80995},{"Description":"WHITE HANGING HEART T-LIGHT HOLDER","revenue":106292.77,"qty":37891},{"Description":"PARTY BUNTING","revenue":99504.33,"qty":18295},{"Description":"JUMBO BAG RED RETROSPOT","revenue":94340.05,"qty":48474},{"Description":"MEDIUM CERAMIC TOP STORAGE JAR","revenue":81700.92,"qty":78033},{"Description":"RABBIT NIGHT LIGHT","revenue":66964.99,"qty":30788},{"Description":"PAPER CHAIN KIT 50'S CHRISTMAS ","revenue":64952.29,"qty":19355},{"Description":"ASSORTED COLOUR BIRD ORNAMENT","revenue":59094.93,"qty":36461},{"Description":"CHILLI LIGHTS","revenue":54117.76,"qty":10306},{"Description":"SPOTTY BUNTING","revenue":42548.13,"qty":8327},{"Description":"JUMBO BAG PINK POLKADOT","revenue":42436.24,"qty":21465},{"Description":"BLACK RECORD COVER FRAME","revenue":40652.13,"qty":11656},{"Description":"PICNIC BASKET WICKER 60 PIECES","revenue":39619.5,"qty":61},{"Description":"DOORMAT KEEP CALM AND COME IN","revenue":38166.64,"qty":5491}],"segments":{"1 order":1493,"2-3 orders":1343,"4-6 orders":802,"7+ orders":700},"top_customers":[{"CustomerID":14646,"revenue":280206.02,"orders":73},{"CustomerID":18102,"revenue":259657.3,"orders":60},{"CustomerID":17450,"revenue":194550.79,"orders":46},{"CustomerID":16446,"revenue":168472.5,"orders":2},{"CustomerID":14911,"revenue":143825.06,"orders":201},{"CustomerID":12415,"revenue":124914.53,"orders":21},{"CustomerID":14156,"revenue":117379.63,"orders":55},{"CustomerID":17511,"revenue":91062.38,"orders":31},{"CustomerID":16029,"revenue":81024.84,"orders":63},{"CustomerID":12346,"revenue":77183.6,"orders":1}],"summary":{"total_revenue":10666684.54,"total_orders":19960,"total_customers":4338,"aov":534.4,"repeat_pct":65.6,"uk_pct":84.6,"num_countries":38}};
 
-const countries = [
-  {name:"United Kingdom", revenue:9025222.08},
-  {name:"Netherlands", revenue:285446.34},
-  {name:"EIRE", revenue:283453.96},
-  {name:"Germany", revenue:228867.14},
-  {name:"France", revenue:209715.11},
-  {name:"Australia", revenue:138521.31}
-];
-
-const products = [
-  {name:"Regency Cakestand 3 Tier", revenue:174484.74},
-  {name:"Paper Craft, Little Birdie", revenue:168469.60},
-  {name:"White Hanging Heart T-Light Holder", revenue:106292.77},
-  {name:"Party Bunting", revenue:99504.33},
-  {name:"Jumbo Bag Red Retrospot", revenue:94340.05},
-  {name:"Rabbit Night Light", revenue:66964.99}
-];
-
+const monthly = DATA.monthly.map(m => ({...m, label: m.Month === "2011-12" ? "Dec (partial)" : new Date(m.Month + "-01").toLocaleString('en-GB',{month:'short'})}));
+const countries = DATA.countries;
+const products = DATA.products;
 const segments = [
-  {label:"1 order", value:1493, color:"#D8D8DC"},
-  {label:"2–3 orders", value:1343, color:"#8BC4B2"},
-  {label:"4–6 orders", value:802, color:"#3E9C82"},
-  {label:"7+ orders", value:700, color:"#0A5C4A"}
+  {label:"1 order", value:DATA.segments["1 order"], color:"#D8D8DC"},
+  {label:"2–3 orders", value:DATA.segments["2-3 orders"], color:"#8BC4B2"},
+  {label:"4–6 orders", value:DATA.segments["4-6 orders"], color:"#3E9C82"},
+  {label:"7+ orders", value:DATA.segments["7+ orders"], color:"#0A5C4A"}
 ];
+const summary = DATA.summary;
+const topCustomers = DATA.top_customers;
 
 const fmtGBP = n => '\u00A3' + Math.round(n).toLocaleString('en-GB');
 const fmtGBPk = n => '\u00A3' + (n/1000).toFixed(0) + 'k';
-
-// use Nov (latest full month) vs Oct as the trend comparison — Dec is partial (only to the 9th)
-const latest = monthly[11], prior = monthly[10];
 const pct = (a,b) => Math.round(((a-b)/b)*1000)/10;
 
-const kpis = [
-  {label:"Revenue", val: fmtGBP(monthly.reduce((s,m)=>s+m.revenue,0)), trend: pct(latest.revenue, prior.revenue), series: monthly.map(m=>m.revenue)},
-  {label:"Orders", val: monthly.reduce((s,m)=>s+m.orders,0).toLocaleString('en-GB'), trend: pct(latest.orders, prior.orders), series: monthly.map(m=>m.orders)},
-  {label:"Customers", val: "4,338", trend: pct(latest.customers, prior.customers), series: monthly.map(m=>m.customers)},
-  {label:"Avg Order Value", val: fmtGBP(534.40), trend: pct(latest.aov, prior.aov), series: monthly.map(m=>m.aov)},
-  {label:"Repeat Customers", val: "65.6%", trend: null, series: null}
-];
+const latest = monthly[11], prior = monthly[10]; // Nov vs Oct — latest full month, Dec is partial
 
-const kpiRow = document.getElementById('kpiRow');
-kpis.forEach((k,i)=>{
-  const dir = k.trend===null ? '' : (k.trend>=0 ? 'up':'down');
-  const arrow = k.trend===null ? '' : (k.trend>=0 ? '\u2191':'\u2193');
-  const trendHtml = k.trend===null
-    ? `<div class="kpi-trend" style="visibility:hidden;">placeholder</div>`
-    : `<div class="kpi-trend ${dir}">${arrow} ${Math.abs(k.trend)}%<span class="vs">vs prior mo.</span></div>`;
-  const div = document.createElement('div');
-  div.className = 'kpi';
-  div.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div>${trendHtml}<canvas id="spark${i}"></canvas>`;
-  kpiRow.appendChild(div);
-});
+/* ---------- sidebar routing ---------- */
+const viewInitialized = { overview: false, revenue: false, customers: false, products: false, countries: false };
 
-Chart.defaults.font.family = "Inter, sans-serif";
-Chart.defaults.color = '#80858B';
-
-kpis.forEach((k,i)=>{
-  if(!k.series) return;
-  new Chart(document.getElementById('spark'+i), {
-    type:'line',
-    data:{ labels:k.series.map((_,x)=>x), datasets:[{ data:k.series, borderColor:'#0D7A62', borderWidth:1.5, pointRadius:0, tension:0.35, fill:true, backgroundColor:'rgba(13,122,98,0.06)' }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{enabled:false}}, scales:{ x:{display:false}, y:{display:false} }, elements:{point:{radius:0}} }
-  });
-});
-
-new Chart(document.getElementById('revenueChart'), {
-  type:'line',
-  data:{
-    labels: monthly.map(m=>m.label),
-    datasets:[{ data: monthly.map(m=>m.revenue), borderColor:'#0A5C4A', backgroundColor:'rgba(10,92,74,0.07)', fill:true, tension:0.35, borderWidth:2, pointRadius:0 }]
-  },
-  options:{
-    responsive:true,
-    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => fmtGBP(ctx.parsed.y) } } },
-    scales:{
-      x:{ grid:{display:false}, ticks:{font:{size:10.5}} },
-      y:{ grid:{color:'#EFEFF1'}, ticks:{ callback:v=>fmtGBPk(v), font:{size:10.5} } }
-    }
+document.getElementById('mainNav').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-view]');
+  if(!btn) return;
+  const view = btn.dataset.view;
+  document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  // a canvas measured while its container is display:none gets a corrupted
+  // zero-width layout that a later resize() can't fully repair — so charts for
+  // a given view are only ever created the first time that view becomes visible
+  if(!viewInitialized[view]){
+    initView[view]();
+    viewInitialized[view] = true;
   }
 });
 
-function renderRanked(containerId, items, maxKey){
-  const max = Math.max(...items.map(d=>d[maxKey]));
+/* ---------- shared renderers ---------- */
+Chart.defaults.font.family = "Inter, sans-serif";
+Chart.defaults.color = '#80858B';
+
+function renderRanked(containerId, items, labelKey, valKey, limit){
+  const list = limit ? items.slice(0, limit) : items;
+  const max = Math.max(...list.map(d=>d[valKey]));
   const el = document.getElementById(containerId);
-  items.forEach((d,i)=>{
-    const pctW = Math.max(6, Math.round((d[maxKey]/max)*100));
+  el.innerHTML = '';
+  list.forEach((d,i)=>{
+    const pctW = Math.max(6, Math.round((d[valKey]/max)*100));
     const row = document.createElement('div');
     row.className = 'ranked-row';
-    row.innerHTML = `<div class="idx">${i+1}</div><div class="label"><div class="name">${d.name}</div><div class="bar-track"><div class="bar-fill" style="width:${pctW}%"></div></div></div><div class="val">${fmtGBP(d[maxKey])}</div>`;
+    row.innerHTML = `<div class="idx">${i+1}</div><div class="label"><div class="name">${d[labelKey]}</div><div class="bar-track"><div class="bar-fill" style="width:${pctW}%"></div></div></div><div class="val">${fmtGBP(d[valKey])}</div>`;
     el.appendChild(row);
   });
 }
-renderRanked('countryList', countries, 'revenue');
-renderRanked('productList', products, 'revenue');
 
-const segTotal = segments.reduce((s,x)=>s+x.value,0);
-const segBarEl = document.getElementById('segBar');
-const bar = document.createElement('div');
-bar.className = 'segbar';
-segments.forEach(s=>{
-  const span = document.createElement('span');
-  span.style.width = ((s.value/segTotal)*100)+'%';
-  span.style.background = s.color;
-  bar.appendChild(span);
-});
-const legend = document.createElement('div');
-legend.className = 'seg-legend';
-segments.forEach(s=>{
-  const item = document.createElement('div');
-  item.className = 'seg-legend-item';
-  item.innerHTML = `<span class="sw" style="background:${s.color}"></span>${s.label} <span style="color:var(--text-soft)">(${s.value.toLocaleString('en-GB')})</span>`;
-  legend.appendChild(item);
-});
-segBarEl.appendChild(bar);
-segBarEl.appendChild(legend);
+function renderSegBar(containerId){
+  const segTotal = segments.reduce((s,x)=>s+x.value,0);
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  const bar = document.createElement('div');
+  bar.className = 'segbar';
+  segments.forEach(s=>{
+    const span = document.createElement('span');
+    span.style.width = ((s.value/segTotal)*100)+'%';
+    span.style.background = s.color;
+    bar.appendChild(span);
+  });
+  const legend = document.createElement('div');
+  legend.className = 'seg-legend';
+  segments.forEach(s=>{
+    const item = document.createElement('div');
+    item.className = 'seg-legend-item';
+    item.innerHTML = `<span class="sw" style="background:${s.color}"></span>${s.label} <span style="color:var(--text-soft)">(${s.value.toLocaleString('en-GB')})</span>`;
+    legend.appendChild(item);
+  });
+  el.appendChild(bar);
+  el.appendChild(legend);
+}
+
+function renderRevenueChart(canvasId){
+  new Chart(document.getElementById(canvasId), {
+    type:'line',
+    data:{
+      labels: monthly.map(m=>m.label),
+      datasets:[{ data: monthly.map(m=>m.revenue), borderColor:'#0A5C4A', backgroundColor:'rgba(10,92,74,0.07)', fill:true, tension:0.35, borderWidth:2, pointRadius:0 }]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => fmtGBP(ctx.parsed.y) } } },
+      scales:{
+        x:{ grid:{display:false}, ticks:{font:{size:10.5}} },
+        y:{ grid:{color:'#EFEFF1'}, ticks:{ callback:v=>fmtGBPk(v), font:{size:10.5} } }
+      }
+    }
+  });
+}
+
+function kpiRowSimple(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  items.forEach(k=>{
+    const div = document.createElement('div');
+    div.className = 'kpi';
+    div.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub||''}</div>`;
+    el.appendChild(div);
+  });
+}
+
+/* ---------- per-view initializers — each runs once, the first time its tab is opened ---------- */
+const initView = {
+
+  overview(){
+    const kpis = [
+      {label:"Revenue", val: fmtGBP(summary.total_revenue), trend: pct(latest.revenue, prior.revenue), series: monthly.map(m=>m.revenue)},
+      {label:"Orders", val: summary.total_orders.toLocaleString('en-GB'), trend: pct(latest.orders, prior.orders), series: monthly.map(m=>m.orders)},
+      {label:"Customers", val: summary.total_customers.toLocaleString('en-GB'), trend: pct(latest.customers, prior.customers), series: monthly.map(m=>m.customers)},
+      {label:"Avg Order Value", val: fmtGBP(summary.aov), trend: pct(latest.aov, prior.aov), series: monthly.map(m=>m.aov)},
+      {label:"Repeat Customers", val: summary.repeat_pct + "%", trend: null, series: null}
+    ];
+    const kpiRow = document.getElementById('kpiRow');
+    kpis.forEach((k,i)=>{
+      const dir = k.trend===null ? '' : (k.trend>=0 ? 'up':'down');
+      const arrow = k.trend===null ? '' : (k.trend>=0 ? '\u2191':'\u2193');
+      const trendHtml = k.trend===null
+        ? `<div class="kpi-trend" style="visibility:hidden;">placeholder</div>`
+        : `<div class="kpi-trend ${dir}">${arrow} ${Math.abs(k.trend)}%<span class="vs">vs prior mo.</span></div>`;
+      const div = document.createElement('div');
+      div.className = 'kpi';
+      div.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div>${trendHtml}<canvas id="spark${i}"></canvas>`;
+      kpiRow.appendChild(div);
+    });
+    kpis.forEach((k,i)=>{
+      if(!k.series) return;
+      new Chart(document.getElementById('spark'+i), {
+        type:'line',
+        data:{ labels:k.series.map((_,x)=>x), datasets:[{ data:k.series, borderColor:'#0D7A62', borderWidth:1.5, pointRadius:0, tension:0.35, fill:true, backgroundColor:'rgba(13,122,98,0.06)' }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{enabled:false}}, scales:{ x:{display:false}, y:{display:false} }, elements:{point:{radius:0}} }
+      });
+    });
+    renderRevenueChart('revenueChart');
+    renderRanked('countryListOverview', countries, 'Country', 'revenue', 6);
+    renderRanked('productListOverview', products, 'Description', 'revenue', 6);
+    renderSegBar('segBar');
+  },
+
+  revenue(){
+    kpiRowSimple('revenueKpiRow', [
+      {label:"Total revenue", val: fmtGBP(summary.total_revenue), sub:"Dec 2010 – Dec 2011"},
+      {label:"Best month", val:"Nov 2011", sub: fmtGBP(1509496.33) + " revenue"},
+      {label:"Avg order value", val: fmtGBP(summary.aov), sub:"Across " + summary.total_orders.toLocaleString('en-GB') + " orders"}
+    ]);
+    renderRevenueChart('revenueChart2');
+    const monthlyTbody = document.querySelector('#monthlyTable tbody');
+    monthly.forEach(m=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${m.label} ${m.Month.slice(0,4)}</td><td class="num">${fmtGBP(m.revenue)}</td><td class="num">${m.orders.toLocaleString('en-GB')}</td><td class="num">${m.customers.toLocaleString('en-GB')}</td><td class="num">${fmtGBP(m.aov)}</td>`;
+      monthlyTbody.appendChild(tr);
+    });
+  },
+
+  customers(){
+    kpiRowSimple('customersKpiRow', [
+      {label:"Total customers", val: summary.total_customers.toLocaleString('en-GB'), sub:"Unique buyers"},
+      {label:"Repeat customers", val: summary.repeat_pct + "%", sub:"Placed more than one order"},
+      {label:"Top customer spend", val: fmtGBP(topCustomers[0].revenue), sub:"Customer #" + topCustomers[0].CustomerID}
+    ]);
+    renderSegBar('segBar2');
+    const topCustTbody = document.querySelector('#topCustomersTable tbody');
+    topCustomers.forEach(c=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>#${c.CustomerID}</td><td class="num">${fmtGBP(c.revenue)}</td><td class="num">${c.orders.toLocaleString('en-GB')}</td>`;
+      topCustTbody.appendChild(tr);
+    });
+  },
+
+  products(){
+    renderRanked('productListFull', products, 'Description', 'revenue', 15);
+  },
+
+  countries(){
+    kpiRowSimple('countriesKpiRow', [
+      {label:"Countries served", val: summary.num_countries, sub:"Shipping destinations"},
+      {label:"UK share of revenue", val: summary.uk_pct + "%", sub:"Domestic vs international"},
+      {label:"Top export market", val: countries[1].Country, sub: fmtGBP(countries[1].revenue) + " revenue"}
+    ]);
+    renderRanked('countryListFull', countries, 'Country', 'revenue', 15);
+  }
+};
+
+// Overview is visible on load, so it initializes immediately; the rest wait for their first click.
+initView.overview();
+viewInitialized.overview = true;
 </script>
 
 </body>

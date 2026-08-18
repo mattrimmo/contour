@@ -6,7 +6,7 @@
   <title>Contour — Reporting &amp; Automation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
@@ -22,6 +22,7 @@
       --accent-lt: #E8F4F1;
       --radius:    12px;
       --radius-sm: 8px;
+      --font-head: "Sora", sans-serif;
     }
     html { scroll-behavior:smooth; }
     body { font-family:"Inter",sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
@@ -63,9 +64,10 @@
       color:var(--accent);
     }
     .hero h1 {
+      font-family: var(--font-head);
       font-size:clamp(2.6rem,5.5vw,4.2rem);
       font-weight:700; line-height:1.06;
-      letter-spacing:-0.04em; color:var(--text);
+      letter-spacing:-0.03em; color:var(--text);
       margin-bottom:1.5rem;
     }
     .hero h1 span { color:var(--accent); }
@@ -91,7 +93,7 @@
     .section { padding:90px 5vw; max-width:1200px; margin:0 auto; }
     .section-eyebrow { font-size:0.7rem; font-weight:600; letter-spacing:0.09em; text-transform:uppercase; color:var(--accent); margin-bottom:0.9rem; display:flex; align-items:center; gap:8px; }
     .section-eyebrow::before { content:""; width:16px; height:2px; background:var(--accent); border-radius:2px; }
-    .section-title { font-size:clamp(1.9rem,3.2vw,2.6rem); font-weight:700; letter-spacing:-0.04em; line-height:1.1; color:var(--text); margin-bottom:1rem; }
+    .section-title { font-family: var(--font-head); font-size:clamp(1.9rem,3.2vw,2.6rem); font-weight:700; letter-spacing:-0.03em; line-height:1.1; color:var(--text); margin-bottom:1rem; }
     .section-sub { font-size:0.9375rem; font-weight:300; color:var(--text-soft); max-width:540px; line-height:1.78; margin-bottom:3.5rem; }
 
     /* SERVICES */
@@ -100,7 +102,7 @@
     .service-card { background:var(--bg-white); padding:2.5rem 2.25rem; transition:background 0.2s; }
     .service-card:hover { background:#FAFAFA; }
     .service-tag { display:inline-flex; align-items:center; gap:6px; font-size:0.67rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--accent); background:var(--accent-lt); padding:0.22rem 0.65rem; border-radius:20px; margin-bottom:1.1rem; }
-    .service-card h3 { font-size:1.0625rem; font-weight:600; letter-spacing:-0.025em; margin-bottom:0.65rem; color:var(--text); }
+    .service-card h3 { font-family: var(--font-head); font-size:1.0625rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.65rem; color:var(--text); }
     .service-card p { font-size:0.875rem; color:var(--text-soft); line-height:1.72; font-weight:300; }
 
     /* APPROACH (replaces stats band) */
@@ -109,11 +111,11 @@
     .approach-head { max-width:560px; margin-bottom:3.5rem; }
     .approach-head .section-eyebrow { color:rgba(255,255,255,0.4); }
     .approach-head .section-eyebrow::before { background:var(--accent-mid); }
-    .approach-head h2 { font-size:clamp(1.8rem,3vw,2.3rem); font-weight:700; letter-spacing:-0.04em; line-height:1.15; color:#FFFFFF; margin-bottom:1rem; }
+    .approach-head h2 { font-family: var(--font-head); font-size:clamp(1.8rem,3vw,2.3rem); font-weight:700; letter-spacing:-0.03em; line-height:1.15; color:#FFFFFF; margin-bottom:1rem; }
     .approach-head p { font-size:0.9375rem; font-weight:300; color:rgba(255,255,255,0.45); line-height:1.75; }
     .approach-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.5rem; }
     .approach-item { border-top:1px solid rgba(255,255,255,0.1); padding-top:1.5rem; }
-    .approach-item h3 { font-size:0.95rem; font-weight:600; color:#FFFFFF; margin-bottom:0.6rem; letter-spacing:-0.01em; }
+    .approach-item h3 { font-family: var(--font-head); font-size:0.95rem; font-weight:600; color:#FFFFFF; margin-bottom:0.6rem; letter-spacing:-0.01em; }
     .approach-item p { font-size:0.85rem; font-weight:300; color:rgba(255,255,255,0.45); line-height:1.7; }
 
     /* PROCESS */
@@ -121,13 +123,13 @@
     .process-card { background:var(--bg-white); border-radius:var(--radius); padding:2rem 1.75rem; border:1px solid var(--rule); }
     .process-num { font-size:0.67rem; font-weight:600; letter-spacing:0.09em; color:var(--accent); margin-bottom:1.25rem; text-transform:uppercase; display:flex; align-items:center; gap:8px; }
     .process-num::before { content:""; width:12px; height:2px; background:var(--accent); border-radius:2px; }
-    .process-card h3 { font-size:0.9375rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:0.6rem; color:var(--text); }
+    .process-card h3 { font-family: var(--font-head); font-size:0.9375rem; font-weight:600; letter-spacing:-0.01em; margin-bottom:0.6rem; color:var(--text); }
     .process-card p { font-size:0.835rem; color:var(--text-soft); line-height:1.7; font-weight:300; }
 
     /* CONTACT */
     .contact-bg { background:var(--bg-dark); }
     .contact-inner { max-width:1200px; margin:0 auto; padding:90px 5vw 100px; display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start; }
-    .contact-copy h2 { font-size:clamp(2rem,3.2vw,2.6rem); font-weight:700; letter-spacing:-0.04em; line-height:1.1; color:#FFFFFF; margin-bottom:1.25rem; }
+    .contact-copy h2 { font-family: var(--font-head); font-size:clamp(2rem,3.2vw,2.6rem); font-weight:700; letter-spacing:-0.03em; line-height:1.1; color:#FFFFFF; margin-bottom:1.25rem; }
     .contact-copy p { font-size:0.9375rem; font-weight:300; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:2rem; }
     .contact-info { display:flex; flex-direction:column; gap:0.6rem; }
     .contact-info-item { font-size:0.85rem; color:rgba(255,255,255,0.4); font-weight:300; display:flex; align-items:center; gap:8px; }
@@ -181,9 +183,7 @@
 <!-- HERO -->
 <div class="hero-wrap">
   <section class="hero">
-    <img class="hero-logo" src="https://raw.githubusercontent.com/mattrimmo/contour/main/CONTOUR-BLACK.png" alt="Contour"/>
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;"><div style="width:40px;height:1px;background:var(--rule);"></div><span class="diamond"></span><div style="width:40px;height:1px;background:var(--rule);"></div></div>
-    <div class="hero-tag" style="margin-bottom:1.5rem;"><span class="diamond diamond-sm"></span>Reporting &amp; Automation<span class="diamond diamond-sm"></span></div>
+    <div class="hero-tag" style="margin-bottom:1.75rem;"><span class="diamond diamond-sm"></span>Reporting &amp; Automation<span class="diamond diamond-sm"></span></div>
     <h1>You didn't start a business to do admin. <span>We build the systems so you don't have to.</span></h1>
     <p class="hero-sub">Contour builds automated reporting systems and clean websites for e-commerce sellers and small agencies who've outgrown spreadsheets. Every dashboard pulls from your existing tools and updates on its own.</p>
     <div class="hero-actions">

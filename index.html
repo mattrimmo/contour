@@ -38,6 +38,8 @@
       border-bottom:1px solid var(--rule);
     }
     .nav-logo img { height:18px; width:auto; display:block; max-width:140px; object-fit:contain; }
+    .nav-logo { opacity:0; transition:opacity 0.35s ease; }
+    nav.scrolled .nav-logo { opacity:1; }
     .nav-links { display:flex; align-items:center; gap:2.5rem; justify-content:center; }
     .nav-links a { font-size:0.78rem; font-weight:400; color:var(--text-soft); text-decoration:none; transition:color 0.2s; }
     .nav-links a:hover { color:var(--accent); }
@@ -183,6 +185,7 @@
 <!-- HERO -->
 <div class="hero-wrap">
   <section class="hero">
+    <img class="hero-logo" src="https://raw.githubusercontent.com/mattrimmo/contour/main/CONTOUR-BLACK.png" alt="Contour"/>
     <div class="hero-tag" style="margin-bottom:1.75rem;"><span class="diamond diamond-sm"></span>Reporting &amp; Automation<span class="diamond diamond-sm"></span></div>
     <h1>You didn't start a business to do admin. <span>We build the systems so you don't have to.</span></h1>
     <p class="hero-sub">Contour builds automated reporting systems and clean websites for e-commerce sellers and small agencies who've outgrown spreadsheets. Every dashboard pulls from your existing tools and updates on its own.</p>
@@ -348,6 +351,23 @@ document.getElementById("contactForm").addEventListener("submit", async function
     alert("Something went wrong. Please try again.");
   }
 });
+
+/* Nav logo fades in only once the hero logo has scrolled out of view — avoids
+   showing both logos stacked on screen at once, while the nav stays otherwise usable. */
+(function(){
+  var heroLogo = document.querySelector('.hero-logo');
+  var nav = document.querySelector('nav');
+  if(!heroLogo || !nav || !('IntersectionObserver' in window)){
+    if(nav) nav.classList.add('scrolled'); // no IO support — fail open, logo just stays visible
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      nav.classList.toggle('scrolled', !entry.isIntersecting);
+    });
+  }, { rootMargin: '-54px 0px 0px 0px', threshold: 0 }); // -54px accounts for the fixed nav's own height
+  obs.observe(heroLogo);
+})();
 </script>
 </body>
 </html>
